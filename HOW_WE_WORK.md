@@ -10,7 +10,7 @@
 spring_study/
 ├── HOW_WE_WORK.md          ← 지금 이 파일. 진행 방식 설명
 ├── README.md               ← 레포 소개 및 로드맵 요약
-├── ROADMAP.md              ← 전체 학습 로드맵 (Phase 0-A ~ Phase 22)
+├── ROADMAP.md              ← 전체 학습 로드맵 (Phase 1 ~ Phase 30)
 ├── COMMIT_CONVENTION.md    ← 커밋 메시지 규칙
 ├── .gitignore
 │
@@ -19,13 +19,14 @@ spring_study/
 │
 ├── notes/                  ← Phase별 이론 정리
 │   ├── README.md
-│   ├── phase-0A-network/
-│   ├── phase-0B-env-gradle/
-│   ├── phase-0C-git/
-│   ├── phase-0D-linux/
-│   ├── phase-0-java-jvm/
-│   ├── phase-1-spring-core/
-│   └── ... (ROADMAP.md의 Phase 순서와 동일)
+│   ├── phase-1-network/
+│   ├── phase-2-os/
+│   ├── phase-3-linux/
+│   ├── phase-4-env-gradle/
+│   ├── phase-5-git/
+│   ├── phase-6-java-jvm/
+│   ├── phase-7-spring-core/
+│   └── ... (ROADMAP.md의 Phase 순서와 동일, phase-30-payment까지)
 │
 ├── hello-spring/           ← 간단한 테스트 & 실습용 (버려도 되는 코드)
 │
@@ -143,7 +144,7 @@ PR 리뷰에서 해당 코드 라인에 코멘트로 간단히 설명 (예습)
 
 **예시:**
 ```markdown
-- [x] **되돌리기 명령어 차이 완전 정리** → [정리](./notes/phase-0C-git/git-basics.md)
+- [x] **되돌리기 명령어 차이 완전 정리** → [정리](./notes/phase-5-git/git-basics.md)
 ```
 
 - 정리 파일 하나가 여러 항목을 커버할 수 있음 → 각 항목마다 개별 링크
