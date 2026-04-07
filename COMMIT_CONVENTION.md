@@ -69,6 +69,32 @@ study: HikariCP 풀 사이즈별 성능 비교 실습 완료
 - `develop` → `main` 머지는 배포 가능한 상태일 때만
 - 이론 정리(`study`) 커밋은 브랜치 없이 `main` 에 직접 커밋
 
+## PR & 머지 플로우
+
+```
+1. develop 에서 기능 브랜치 생성
+   git switch -c feat/기능명
+
+2. 작업 후 커밋
+   git add 파일명
+   git commit -m "feat: 기능 설명"
+
+3. 원격에 push
+   git push origin feat/기능명
+
+4. GitHub에서 PR 생성 (base: develop ← compare: feat/기능명)
+
+5. 코드 리뷰 후 머지 (Squash and merge 또는 Merge commit)
+
+6. 머지 후 기능 브랜치 삭제
+   git branch -d feat/기능명
+```
+
+### PR 작성 원칙
+- 제목: 커밋 컨벤션과 동일 (`feat: 기능 설명`)
+- 본문: 변경 이유 / 주요 변경사항 / 테스트 방법
+- 가능한 작은 단위로 PR 작성 (리뷰하기 쉽게)
+
 ---
 
 ## 규칙
