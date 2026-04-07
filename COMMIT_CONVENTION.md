@@ -54,6 +54,23 @@ study: HikariCP 풀 사이즈별 성능 비교 실습 완료
 
 ---
 
+## 브랜치 전략
+
+| 브랜치 | 용도 | 예시 |
+|--------|------|------|
+| `main` | 배포 가능한 안정 버전 | — |
+| `develop` | 개발 통합 브랜치 | — |
+| `feat/기능명` | 기능 개발 | `feat/user-login` |
+| `fix/버그명` | 버그 수정 | `fix/token-expired-npe` |
+| `refactor/내용` | 리팩토링 | `refactor/user-service` |
+| `chore/내용` | 설정, 의존성 변경 | `chore/gradle-update` |
+
+- `feat`, `fix`, `refactor` 브랜치는 `develop` 에서 분기 후 `develop` 으로 머지
+- `develop` → `main` 머지는 배포 가능한 상태일 때만
+- 이론 정리(`study`) 커밋은 브랜치 없이 `main` 에 직접 커밋
+
+---
+
 ## 규칙
 
 - 커밋은 **하나의 논리적 단위**로 쪼개기
