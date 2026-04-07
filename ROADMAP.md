@@ -228,9 +228,9 @@
 - [ ] POJO(Plain Old Java Object) 개념 및 Spring이 POJO를 다루는 방식 정리
 - [x] IoC(Inversion of Control) 컨테이너 동작 원리 정리 → [정리](./notes/phase-1-spring-core/ioc-di.md)
 - [x] DI(Dependency Injection) — 생성자 주입 vs 필드 주입 vs 세터 주입 비교 정리 → [정리](./notes/phase-1-spring-core/ioc-di.md)
-- [ ] Spring Bean 생명주기 (생성 → 의존관계 주입 → 초기화 → 소멸) 정리
+- [x] Spring Bean 생명주기 (생성 → 의존관계 주입 → 초기화 → 소멸) 정리 → [정리](./notes/phase-1-spring-core/spring-boot-application.md)
 - [ ] ApplicationContext vs BeanFactory 차이 정리
-- [ ] Spring Boot 자동 구성(Auto Configuration) 동작 원리 정리 (`@SpringBootApplication`, `@EnableAutoConfiguration`)
+- [x] Spring Boot 자동 구성(Auto Configuration) 동작 원리 정리 (`@SpringBootApplication`, `@EnableAutoConfiguration`) → [정리](./notes/phase-1-spring-core/spring-boot-application.md)
 - [ ] Tomcat 임베디드 서버 구조 및 요청 처리 흐름 정리
 - [ ] 실습: BeanDefinition, @Configuration, @Bean, @Component 직접 등록하며 차이 확인
 
