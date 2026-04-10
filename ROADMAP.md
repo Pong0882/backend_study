@@ -9,9 +9,9 @@
 
 | 구분 | 완료 | 미완료 | 합계 |
 |------|------|--------|------|
-| 이론 정리 | 20 | 328 | 348 |
+| 이론 정리 | 22 | 326 | 348 |
 | 실습 | 4 | 326 | 330 |
-| **전체** | **24** | **654** | **678** |
+| **전체** | **26** | **652** | **678** |
 
 > 이 표는 항목 완료 시 수동으로 업데이트한다.
 
@@ -705,8 +705,8 @@
 ### 14-3. 보안 취약점 방어
 
 - [ ] OWASP Top 10 각 항목 정리 및 Spring에서 방어 방법 정리
-- [ ] CORS 동작 원리 정리 (Preflight, Simple Request)
-- [ ] CSRF 공격 원리 및 방어 정리
+- [x] CORS 동작 원리 정리 (Preflight, Simple Request) → [정리](./notes/phase-14-security-jwt/spring-security.md)
+- [x] CSRF 공격 원리 및 방어 정리 → [정리](./notes/phase-14-security-jwt/spring-security.md)
 - [ ] XSS 공격 원리 및 방어 정리
 - [ ] SQL Injection 방어 정리 (PreparedStatement, JPA 파라미터 바인딩)
 - [ ] 보안 HTTP 헤더 정리 (`X-Frame-Options` / `Strict-Transport-Security` / `Content-Security-Policy`)
