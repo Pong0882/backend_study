@@ -8,11 +8,15 @@ import com.pongtorich.pong_to_rich.dto.auth.LoginRequest;
 import com.pongtorich.pong_to_rich.dto.auth.RefreshRequest;
 import com.pongtorich.pong_to_rich.dto.auth.SignUpRequest;
 import com.pongtorich.pong_to_rich.dto.auth.TokenResponse;
+import com.pongtorich.pong_to_rich.exception.auth.DuplicateEmailException;
+import com.pongtorich.pong_to_rich.exception.auth.ExpiredTokenException;
+import com.pongtorich.pong_to_rich.exception.auth.InvalidCredentialsException;
+import com.pongtorich.pong_to_rich.exception.auth.InvalidTokenException;
+import com.pongtorich.pong_to_rich.exception.auth.UserNotFoundException;
 import com.pongtorich.pong_to_rich.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +41,7 @@ public class AuthService {
 
         if (userRepository.existsByEmail(request.getEmail())) {
             log.warn("[회원가입] 이메일 중복: {}", request.getEmail());
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+            throw new DuplicateEmailException();
         }
 
         User user = User.builder()
@@ -57,12 +61,12 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> {
                     log.warn("[로그인] 존재하지 않는 이메일: {}", request.getEmail());
-                    return new BadCredentialsException("이메일 또는 비밀번호가 올바르지 않습니다.");
+                    return new InvalidCredentialsException();
                 });
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             log.warn("[로그인] 비밀번호 불일치: {}", request.getEmail());
-            throw new BadCredentialsException("이메일 또는 비밀번호가 올바르지 않습니다.");
+            throw new InvalidCredentialsException();
         }
 
         String accessToken = jwtProvider.generateAccessToken(user.getEmail(), user.getRole().name());
@@ -101,19 +105,22 @@ public class AuthService {
         RefreshToken saved = refreshTokenRepository.findByToken(request.refreshToken())
                 .orElseThrow(() -> {
                     log.warn("[토큰 재발급] DB에 없는 Refresh Token");
-                    return new BadCredentialsException("유효하지 않은 Refresh Token입니다.");
+                    return new InvalidTokenException();
                 });
 
         if (saved.getExpiresAt().isBefore(LocalDateTime.now())) {
             log.warn("[토큰 재발급] 만료된 Refresh Token: {}", saved.getEmail());
             refreshTokenRepository.delete(saved);
-            throw new BadCredentialsException("만료된 Refresh Token입니다. 다시 로그인해주세요.");
+            throw new ExpiredTokenException();
         }
 
         jwtProvider.validateToken(request.refreshToken());
 
         User user = userRepository.findByEmail(saved.getEmail())
-                .orElseThrow(() -> new BadCredentialsException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> {
+                    log.warn("[토큰 재발급] 사용자 없음: {}", saved.getEmail());
+                    return new UserNotFoundException();
+                });
 
         String newAccessToken = jwtProvider.generateAccessToken(user.getEmail(), user.getRole().name());
 

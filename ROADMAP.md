@@ -9,9 +9,9 @@
 
 | 구분 | 완료 | 미완료 | 합계 |
 |------|------|--------|------|
-| 이론 정리 | 22 | 305 | 327 |
-| 실습 | 6 | 303 | 309 |
-| **전체** | **28** | **608** | **636** |
+| 이론 정리 | 25 | 302 | 327 |
+| 실습 | 9 | 300 | 309 |
+| **전체** | **34** | **602** | **636** |
 
 > 이 표는 항목 완료 시 수동으로 업데이트한다.
 
@@ -432,16 +432,16 @@
 
 ### 9-1. 예외 처리 이론
 
-- [ ] Java 예외 계층 구조 정리 (Checked vs Unchecked, Error vs Exception)
+- [x] Java 예외 계층 구조 정리 (Checked vs Unchecked, Error vs Exception) → [정리](./notes/phase-9-exception/global-exception-handler.md)
 - [ ] Spring 예외 처리 흐름 정리 (`HandlerExceptionResolver` 체인)
-- [ ] 비즈니스 예외 vs 시스템 예외 분리 설계 원칙 정리
-- [ ] HTTP 상태코드와 예외 매핑 전략 정리
+- [x] 비즈니스 예외 vs 시스템 예외 분리 설계 원칙 정리 → [정리](./notes/phase-9-exception/global-exception-handler.md)
+- [x] HTTP 상태코드와 예외 매핑 전략 정리 → [정리](./notes/phase-9-exception/global-exception-handler.md)
 
 ### 9-2. 예외 처리 구현
 
-- [ ] 실습: 커스텀 비즈니스 예외 계층 설계 (`BaseException` → 도메인별 예외)
-- [ ] 실습: `ErrorCode` Enum 설계 (code / message / httpStatus 통합 관리)
-- [ ] 실습: `@ControllerAdvice` 글로벌 예외 핸들러 구현
+- [x] 실습: 커스텀 비즈니스 예외 계층 설계 (`BaseException` → 도메인별 예외) → [정리](./notes/phase-9-exception/global-exception-handler.md)
+- [x] 실습: `ErrorCode` Enum 설계 (code / message / httpStatus 통합 관리) → [정리](./notes/phase-9-exception/global-exception-handler.md)
+- [x] 실습: `@ControllerAdvice` 글로벌 예외 핸들러 구현 → [정리](./notes/phase-9-exception/global-exception-handler.md)
 - [ ] 실습: `MethodArgumentNotValidException` 처리 표준화
 - [ ] 실습: Spring Security 인증/인가 예외 커스터마이징
 - [ ] 실습: 외부 API 호출 예외 처리 패턴 (Retry, Circuit Breaker Fallback)
