@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,13 +37,21 @@ public class SecurityConfig {
                                 "/index.html",
                                 "/logo.png",
                                 "/health",
-                                "/api/auth/**",
+                                "/api/auth/signup",
+                                "/api/auth/login",
+                                "/api/auth/refresh",
                                 "/swagger",
                                 "/swagger-ui/**",
                                 "/api-docs/**"
                         ).permitAll()
+                        // logout은 유효한 토큰이 있어야 호출 가능
+                        .requestMatchers("/api/auth/logout").authenticated()
                         .anyRequest().authenticated()
                 )
+
+                // 인증 실패 시 GlobalExceptionHandler와 동일한 포맷으로 401 응답
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
 
                 // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 배치
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

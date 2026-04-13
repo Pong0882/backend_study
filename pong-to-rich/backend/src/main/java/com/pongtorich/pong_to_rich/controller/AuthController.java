@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,12 +59,13 @@ public class AuthController {
     }
 
     @Operation(summary = "로그아웃", description = "Refresh Token DB에서 삭제. Authorization 헤더 필요")
-    @ApiResponse(responseCode = "200", description = "로그아웃 성공")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+            @ApiResponse(responseCode = "401", description = "토큰 없음 또는 유효하지 않은 토큰")
+    })
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        authService.logout(email);
+    public ResponseEntity<Void> logout(Authentication authentication) {
+        authService.logout(authentication.getName());
         return ResponseEntity.ok().build();
     }
 }
