@@ -9,9 +9,9 @@
 
 | 구분 | 완료 | 미완료 | 합계 |
 |------|------|--------|------|
-| 이론 정리 | 26 | 302 | 328 |
-| 실습 | 9 | 300 | 309 |
-| **전체** | **35** | **602** | **637** |
+| 이론 정리 | 27 | 301 | 328 |
+| 실습 | 12 | 297 | 309 |
+| **전체** | **39** | **598** | **637** |
 
 > 이 표는 항목 완료 시 수동으로 업데이트한다.
 
@@ -389,7 +389,7 @@
 ### 8-2. RESTful API 구현
 
 - [ ] 실습: RESTful 리소스 설계 원칙에 따른 API 구현 (CRUD)
-- [ ] 실습: 표준 응답 포맷 설계 (`ApiResponse` wrapper, 에러 포맷 통일)
+- [x] 실습: 표준 응답 포맷 설계 (`ApiResponse` wrapper, 에러 포맷 통일) → [정리](./notes/phase-8-rest-api/api-result.md)
 - [ ] 실습: `@ControllerAdvice` + `@ExceptionHandler` 글로벌 예외 처리 구현
 - [ ] 실습: `@Valid` + `BindingResult` 입력 검증 구현
 - [ ] 실습: HATEOAS 적용 (Level 3 REST)
@@ -1109,7 +1109,7 @@
 
 ### 26-1. 이론
 
-- [ ] CI/CD 개념 정리 (Continuous Integration / Delivery / Deployment 차이)
+- [x] CI/CD 개념 정리 (Continuous Integration / Delivery / Deployment 차이) → [정리](./notes/phase-26-cicd/cicd-concepts.md)
 - [ ] GitHub Actions vs Jenkins vs GitLab CI 비교 정리
 - [ ] GitOps 개념 정리 (ArgoCD 기반)
 - [ ] 브랜치 전략 정리 (Git Flow vs GitHub Flow vs Trunk-Based)
@@ -1117,7 +1117,8 @@
 
 ### 26-2. GitHub Actions 실습 (Push 방식)
 
-- [ ] 실습: PR 시 자동 테스트 실행 워크플로우 구성
+- [x] 실습: PR 시 자동 테스트 실행 워크플로우 구성 → [정리](./notes/phase-26-cicd/github-actions.md)
+- [x] 실습: main 브랜치 머지 시 빌드 → Self-hosted Runner 배포 파이프라인 → [정리](./notes/phase-26-cicd/github-actions.md)
 - [ ] 실습: main 브랜치 머지 시 Docker 이미지 빌드 → GHCR / ECR push 파이프라인
 - [ ] 실습: ECS / EC2 자동 배포 파이프라인 구성
 - [ ] 실습: 환경별 배포 분리 (dev / staging / prod)
