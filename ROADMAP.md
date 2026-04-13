@@ -9,9 +9,9 @@
 
 | 구분 | 완료 | 미완료 | 합계 |
 |------|------|--------|------|
-| 이론 정리 | 25 | 302 | 327 |
+| 이론 정리 | 26 | 302 | 328 |
 | 실습 | 9 | 300 | 309 |
-| **전체** | **34** | **602** | **636** |
+| **전체** | **35** | **602** | **637** |
 
 > 이 표는 항목 완료 시 수동으로 업데이트한다.
 
@@ -935,6 +935,7 @@
 - [ ] LangChain4j vs Spring AI 비교 정리
 - [ ] RAG(Retrieval Augmented Generation) 개념 정리
 - [ ] 벡터 DB 개념 정리 (임베딩, 유사도 검색, HNSW 인덱스)
+- [x] Harness Testing 정리 (AI 모델 평가 프레임워크, 할루시네이션/안전성/Prompt Injection 검증) → [정리](./notes/phase-21-ai/harness-testing.md)
 - [ ] **AI Agent 개념 정리**
   - Agent란 무엇인가 (LLM + Tool + Memory + Planning 조합)
   - ReAct(Reasoning + Acting) 패턴 정리
