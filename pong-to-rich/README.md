@@ -8,7 +8,7 @@
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat&logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
-![Kafka](https://img.shields.io/badge/Kafka-231F20?style=flat&logo=apachekafka&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/Multipass-E95420?style=flat&logo=ubuntu&logoColor=white)
 
 ---
 
@@ -128,12 +128,11 @@ AI 모델을 직접 선택하고, 본인만의 매매 기준을 자연어로 입
 
 | 영역 | 기술 |
 |------|------|
-| 백엔드 | Java 17, Spring Boot, Spring Security, JPA |
-| 인프라 | Docker, Kubernetes, AWS |
-| 데이터 | MySQL, Redis, Kafka, Elasticsearch |
-| AI | LLM API (GPT / Claude), RAG, 머신러닝 예측 모델 |
-| 모니터링 | Prometheus, Grafana, ELK Stack |
-| CI/CD | GitHub Actions, ArgoCD |
+| 백엔드 | ![Java](https://img.shields.io/badge/Java_17-ED8B00?style=flat&logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat&logo=springboot&logoColor=white) ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=flat&logo=springsecurity&logoColor=white) ![JPA](https://img.shields.io/badge/JPA-59666C?style=flat&logo=hibernate&logoColor=white) |
+| 데이터 | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat&logo=redis&logoColor=white) |
+| 인프라 | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white) ![Multipass](https://img.shields.io/badge/Multipass-E95420?style=flat&logo=ubuntu&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=githubactions&logoColor=white) |
+| 모니터링 | ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=flat&logo=prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=grafana&logoColor=white) ![Loki](https://img.shields.io/badge/Loki-F0A640?style=flat&logo=grafana&logoColor=white) |
+| 부하 테스트 | ![k6](https://img.shields.io/badge/k6-7D64FF?style=flat&logo=k6&logoColor=white) |
 
 > 처음부터 최적화하지 않는다.
 > 느려지는 지점을 직접 체감하고 단계적으로 개선한다.
