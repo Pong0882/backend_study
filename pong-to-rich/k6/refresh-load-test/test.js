@@ -24,12 +24,14 @@ const errorRate = new Rate('error_rate');
 const refreshDuration = new Trend('refresh_duration', true);
 
 export const options = {
-  vus: 50,
+  vus: 500,
   duration: '30s',
 
   thresholds: {
-    http_req_duration: ['p(95)<200'],  // refresh는 bcrypt 없으므로 기준 200ms로 설정
-    error_rate: ['rate<0.01'],
+    http_req_duration: ['p(95)<200', 'p(99)<400'],  // P95 200ms, P99 400ms 이하
+    http_req_waiting: ['p(95)<150'],                 // TTFB (서버 처리 시간)
+    http_req_failed: ['rate<0.01'],                  // 실패율 1% 이하
+    error_rate: ['rate<0.01'],                       // 커스텀 에러율 1% 이하
   },
 };
 

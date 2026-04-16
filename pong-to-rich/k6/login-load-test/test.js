@@ -27,8 +27,10 @@ export const options = {
   duration: '30s',  // 테스트 지속 시간
 
   thresholds: {
-    http_req_duration: ['p(95)<500'],  // P95 응답시간 500ms 이하
-    error_rate: ['rate<0.01'],         // 에러율 1% 이하
+    http_req_duration: ['p(95)<500', 'p(99)<1000'],  // P95 500ms, P99 1000ms 이하
+    http_req_waiting: ['p(95)<450'],                  // TTFB (서버 처리 시간)
+    http_req_failed: ['rate<0.01'],                   // 실패율 1% 이하
+    error_rate: ['rate<0.01'],                        // 커스텀 에러율 1% 이하
   },
 };
 

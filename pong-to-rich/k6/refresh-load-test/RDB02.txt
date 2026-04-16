@@ -1,0 +1,61 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: test.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 1m0s max duration (incl. graceful stop):
+              * default: 50 looping VUs for 30s (gracefulStop: 30s)
+
+INFO[0006] setup 완료: 100개 refreshToken 수집                source=console
+
+
+  █ THRESHOLDS 
+
+    error_rate
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_duration
+    ✓ 'p(95)<200' p(95)=6.75ms
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 29000   803.486045/s
+    checks_succeeded...: 100.00% 29000 out of 29000
+    checks_failed......: 0.00%   0 out of 29000
+
+    ✓ status 200
+    ✓ has accessToken
+
+    CUSTOM
+    error_rate.....................: 0.00%  0 out of 14500
+    refresh_duration...............: avg=2.97ms   min=874.09µs med=2.4ms    max=42.53ms p(90)=4.78ms   p(95)=6.34ms  
+
+    HTTP
+    http_req_duration..............: avg=3.36ms   min=874.09µs med=2.41ms   max=81.8ms  p(90)=4.89ms   p(95)=6.75ms  
+      { expected_response:true }...: avg=3.36ms   min=874.09µs med=2.41ms   max=81.8ms  p(90)=4.89ms   p(95)=6.75ms  
+    http_req_failed................: 0.00%  0 out of 14600
+    http_reqs......................: 14600  404.513664/s
+
+    EXECUTION
+    iteration_duration.............: avg=103.59ms min=101.01ms med=103.03ms max=162.3ms p(90)=105.42ms p(95)=106.98ms
+    iterations.....................: 14500  401.743022/s
+    vus............................: 50     min=0          max=50
+    vus_max........................: 50     min=50         max=50
+
+    NETWORK
+    data_received..................: 11 MB  311 kB/s
+    data_sent......................: 5.2 MB 144 kB/s
+
+
+
+
+running (0m36.1s), 00/50 VUs, 14500 complete and 0 interrupted iterations
+default ✓ [======================================] 50 VUs  30s
