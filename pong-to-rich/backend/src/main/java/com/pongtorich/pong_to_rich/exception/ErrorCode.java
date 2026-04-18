@@ -22,7 +22,33 @@ public enum ErrorCode {
     // Stock
     STOCK_NOT_FOUND(HttpStatus.NOT_FOUND, "종목을 찾을 수 없습니다."),
 
+    // BrokerAccount
+    BROKER_ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "증권사 계좌를 찾을 수 없습니다."),
+    BROKER_ACCOUNT_DUPLICATE(HttpStatus.CONFLICT, "이미 등록된 증권사 계좌입니다."),
+    BROKER_ACCOUNT_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 증권사 계좌에 대한 권한이 없습니다."),
+
+    // Watchlist
+    WATCHLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "관심 종목을 찾을 수 없습니다."),
+    WATCHLIST_DUPLICATE(HttpStatus.CONFLICT, "이미 관심 종목으로 등록된 종목입니다."),
+    WATCHLIST_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 관심 종목에 대한 권한이 없습니다."),
+
+    // Strategy
+    STRATEGY_NOT_FOUND(HttpStatus.NOT_FOUND, "전략을 찾을 수 없습니다."),
+    STRATEGY_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 전략에 대한 권한이 없습니다."),
+    STRATEGY_INVALID_STATUS(HttpStatus.BAD_REQUEST, "현재 상태에서 변경할 수 없습니다."),
+
+    // Order
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."),
+    ORDER_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 주문에 대한 권한이 없습니다."),
+    ORDER_CANCEL_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "취소할 수 없는 주문입니다."),
+
+    // Portfolio
+    PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "포트폴리오를 찾을 수 없습니다."),
+    HOLDING_NOT_FOUND(HttpStatus.NOT_FOUND, "보유 종목을 찾을 수 없습니다."),
+    HOLDING_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 보유 종목에 대한 권한이 없습니다."),
+
     // Common
+    VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.");
 
     private final HttpStatus status;

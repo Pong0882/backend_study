@@ -316,85 +316,132 @@ portfolios 1 ─── N holdings
 
 ## 7. API 설계
 
-### 인증
-```
-POST   /api/v1/auth/signup          회원가입
-POST   /api/v1/auth/login           로그인
-POST   /api/v1/auth/logout          로그아웃
-POST   /api/v1/auth/refresh         토큰 재발급
-GET    /api/v1/auth/oauth2/{provider} 소셜 로그인
+> ✅ = 구현 완료 | 🔲 = 미구현
+> 모든 인증 필요 API는 `Authorization: Bearer {accessToken}` 헤더 필요
+> 공통 응답 형식: `{ "success": true, "data": { ... } }` / 오류: `{ "code": "ERROR_CODE", "message": "..." }`
+
+### 인증 (`/api/auth`)
+
+| 메서드 | 경로 | 설명 | 인증 | 상태 |
+|--------|------|------|------|------|
+| POST | /api/auth/signup | 회원가입 | X | ✅ |
+| POST | /api/auth/login | 로그인 (Access + Refresh Token 발급) | X | ✅ |
+| POST | /api/auth/refresh | Access Token 재발급 | X | ✅ |
+| POST | /api/auth/logout | 로그아웃 (Refresh Token 삭제) | O | ✅ |
+
+### 종목 (`/api/stocks`)
+
+| 메서드 | 경로 | 설명 | 인증 | 상태 |
+|--------|------|------|------|------|
+| GET | /api/stocks/{code} | 종목 현재가 조회 (KIS 실시간) | X | ✅ |
+| GET | /api/stocks/{code}/prices | DB 저장된 일봉 데이터 조회 | X | ✅ |
+| POST | /api/stocks/{code}/fetch | 기간별 일봉 데이터 수집 → DB 저장 | X | ✅ |
+
+### 증권사 계좌 (`/api/broker-accounts`)
+
+| 메서드 | 경로 | 설명 | 인증 | 상태 |
+|--------|------|------|------|------|
+| POST | /api/broker-accounts | 증권사 계좌 등록 | O | ✅ |
+| GET | /api/broker-accounts | 내 계좌 목록 조회 | O | ✅ |
+| GET | /api/broker-accounts/{id} | 계좌 단건 조회 | O | ✅ |
+| DELETE | /api/broker-accounts/{id} | 계좌 비활성화 | O | ✅ |
+
+**요청 예시 (계좌 등록):**
+```json
+{
+  "broker": "KIS",
+  "accountType": "MOCK",
+  "appkey": "PSo...",
+  "appsecret": "aBc..."
+}
 ```
 
-### 회원
-```
-GET    /api/v1/users/me             내 정보 조회
-PUT    /api/v1/users/me             내 정보 수정
-POST   /api/v1/users/me/broker      증권사 API 키 등록
-DELETE /api/v1/users/me/broker/{id} 증권사 API 키 삭제
+### 관심 종목 (`/api/watchlist`)
+
+| 메서드 | 경로 | 설명 | 인증 | 상태 |
+|--------|------|------|------|------|
+| POST | /api/watchlist | 관심 종목 등록 | O | ✅ |
+| GET | /api/watchlist | 내 관심 종목 목록 조회 | O | ✅ |
+| PATCH | /api/watchlist/{id} | 알림가 수정 | O | ✅ |
+| DELETE | /api/watchlist/{id} | 관심 종목 삭제 | O | ✅ |
+
+**요청 예시 (관심 종목 등록):**
+```json
+{
+  "stockCode": "005930",
+  "alertPrice": 70000
+}
 ```
 
-### 종목
-```
-GET    /api/v1/stocks               종목 검색 (keyword, market)
-GET    /api/v1/stocks/{code}        종목 상세
-GET    /api/v1/stocks/{code}/prices 시세 히스토리 (period)
-POST   /api/v1/watchlists           관심 종목 추가
-DELETE /api/v1/watchlists/{id}      관심 종목 삭제
+### 자동매매 전략 (`/api/strategies`)
+
+| 메서드 | 경로 | 설명 | 인증 | 상태 |
+|--------|------|------|------|------|
+| POST | /api/strategies | 전략 생성 | O | ✅ |
+| GET | /api/strategies | 내 전략 목록 조회 | O | ✅ |
+| GET | /api/strategies/{id} | 전략 단건 조회 | O | ✅ |
+| PATCH | /api/strategies/{id}/activate | 전략 활성화 | O | ✅ |
+| PATCH | /api/strategies/{id}/pause | 전략 일시정지 | O | ✅ |
+| PATCH | /api/strategies/{id}/deactivate | 전략 중지 | O | ✅ |
+| DELETE | /api/strategies/{id} | 전략 삭제 (ACTIVE 상태 불가) | O | ✅ |
+
+**요청 예시 (전략 생성):**
+```json
+{
+  "brokerAccountId": 1,
+  "stockCode": "005930",
+  "name": "삼성전자 RSI 전략",
+  "orderQuantity": 10
+}
 ```
 
-### 전략
-```
-GET    /api/v1/strategies           내 전략 목록
-POST   /api/v1/strategies           전략 등록
-GET    /api/v1/strategies/{id}      전략 상세
-PUT    /api/v1/strategies/{id}      전략 수정
-DELETE /api/v1/strategies/{id}      전략 삭제
-POST   /api/v1/strategies/{id}/start 전략 실행
-POST   /api/v1/strategies/{id}/stop  전략 중지
+**전략 상태:**
+- `INACTIVE` — 생성 시 기본값, 중지 상태
+- `ACTIVE` — 스케줄러가 조건 체크 중
+- `PAUSED` — 일시정지
+
+### 주문 (`/api/orders`)
+
+| 메서드 | 경로 | 설명 | 인증 | 상태 |
+|--------|------|------|------|------|
+| POST | /api/orders | 수동 주문 생성 | O | ✅ |
+| GET | /api/orders | 내 주문 목록 조회 (최신순) | O | ✅ |
+| GET | /api/orders/{id} | 주문 단건 조회 | O | ✅ |
+| PATCH | /api/orders/{id}/cancel | 주문 취소 (PENDING 상태만) | O | ✅ |
+
+**요청 예시 (지정가 매수):**
+```json
+{
+  "brokerAccountId": 1,
+  "stockCode": "005930",
+  "orderType": "BUY",
+  "priceType": "LIMIT",
+  "quantity": 10,
+  "price": 70000
+}
 ```
 
-### 주문
-```
-GET    /api/v1/orders               주문 내역 조회
-GET    /api/v1/orders/{id}          주문 상세
-POST   /api/v1/orders               수동 주문
-DELETE /api/v1/orders/{id}          주문 취소
-```
+**주문 상태:** `PENDING` → `PARTIAL` / `FILLED` / `CANCELLED` / `FAILED`
 
-### 포트폴리오
-```
-GET    /api/v1/portfolios           포트폴리오 목록
-GET    /api/v1/portfolios/{id}      포트폴리오 상세
-GET    /api/v1/portfolios/{id}/holdings   보유 종목
-GET    /api/v1/portfolios/{id}/profits    수익률 통계
-```
+### 포트폴리오 (`/api/portfolio`)
 
-### 커뮤니티
-```
-GET    /api/v1/posts                게시글 목록
-POST   /api/v1/posts                게시글 작성
-GET    /api/v1/posts/{id}           게시글 상세
-PUT    /api/v1/posts/{id}           게시글 수정
-DELETE /api/v1/posts/{id}           게시글 삭제
-POST   /api/v1/posts/{id}/comments  댓글 작성
-POST   /api/v1/posts/{id}/likes     좋아요
-DELETE /api/v1/posts/{id}/likes     좋아요 취소
-```
+| 메서드 | 경로 | 설명 | 인증 | 상태 |
+|--------|------|------|------|------|
+| GET | /api/portfolio | 내 포트폴리오 조회 (보유 종목 포함) | O | ✅ |
+| PATCH | /api/portfolio/holdings/{id}/toggle-hidden | 보유 종목 숨김/표시 토글 | O | ✅ |
 
-### 결제
-```
-POST   /api/v1/payments             결제 승인 요청
-POST   /api/v1/payments/{id}/cancel 결제 취소
-GET    /api/v1/payments             결제 내역
-GET    /api/v1/points               포인트 잔액 / 내역
-```
+---
 
-### 알림
+### 미구현 (추후 추가 예정)
+
 ```
-GET    /api/v1/notifications        알림 목록
-PATCH  /api/v1/notifications/{id}/read  읽음 처리
-DELETE /api/v1/notifications/{id}   알림 삭제
-GET    /api/v1/notifications/stream SSE 실시간 알림 구독
+GET    /api/v1/auth/oauth2/{provider}       소셜 로그인
+GET    /api/v1/users/me                     내 정보 조회
+PUT    /api/v1/users/me                     내 정보 수정
+GET    /api/v1/stocks                       종목 검색
+GET    /api/v1/notifications/stream         SSE 실시간 알림
+POST   /api/v1/payments                     결제
+GET    /api/v1/posts                        커뮤니티 게시글 목록
 ```
 
 ---
