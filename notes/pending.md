@@ -22,6 +22,8 @@
 | Java 시간 API | LocalDateTime, ChronoUnit.SECONDS.between() — KIS TTL 계산에서 사용 | day10 | ✅ [정리](phase-6-java-jvm/java-time-api.md) |
 | Mockito verify / ArgumentMatcher | verify/never 호출 검증, longThat 커스텀 조건 검증 | day10 | ✅ [정리](phase-10-tdd/mockito-verify.md) |
 | Mockito Strictness | STRICT_STUBS vs LENIENT — @BeforeEach 공통 stub 패턴에서 LENIENT 사용 이유 | day10 | ✅ [정리](phase-10-tdd/mockito-strictness.md) |
+| @SQLRestriction | Entity 레벨 조회 필터 — Soft Delete 탈퇴 유저 자동 필터링, @Where deprecated 대체 | day10 | ✅ [정리](phase-11-db-jpa/sql-restriction.md) |
+| @Transactional 원자성 | User + Portfolio 두 테이블 저장 시 원자성 보장, rollbackFor, readOnly | day10 | ✅ [정리](phase-11-db-jpa/transactional-atomicity.md) |
 | `@PrePersist` / `@PreUpdate` | 모든 Entity의 createdAt/updatedAt 자동 관리 — JPA 생명주기 콜백 | day09 | ✅ [정리](phase-11-db-jpa/jpa-lifecycle-callbacks.md) |
 | Soft Delete | User.softDelete() — deletedAt으로 논리 삭제, Hard Delete와 차이 | day09 | ✅ [정리](phase-11-db-jpa/soft-delete.md) |
 | `BigDecimal` | StockPrice/Holding/Order 가격 타입 — 소수점 정밀도 (미국 주식 대응) | day09 | ✅ [정리](phase-11-db-jpa/bigdecimal.md) |
