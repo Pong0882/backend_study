@@ -1,6 +1,8 @@
 package com.pongtorich.pong_to_rich.service;
 
 import com.pongtorich.pong_to_rich.domain.auth.RefreshTokenStore;
+import com.pongtorich.pong_to_rich.domain.portfolio.Portfolio;
+import com.pongtorich.pong_to_rich.domain.portfolio.PortfolioRepository;
 import com.pongtorich.pong_to_rich.domain.user.User;
 import com.pongtorich.pong_to_rich.domain.user.UserRepository;
 import com.pongtorich.pong_to_rich.dto.auth.LoginRequest;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PortfolioRepository portfolioRepository;
     private final RefreshTokenStore refreshTokenStore;  // DB or Redis — config로 전환
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
@@ -35,6 +38,7 @@ public class AuthService {
     @Value("${jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
 
+    @Transactional
     public void signUp(SignUpRequest request) {
         log.info("[회원가입] 시도: {}", request.getEmail());
 
@@ -57,7 +61,9 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
-        log.info("[회원가입] 완료: {}", request.getEmail());
+
+        portfolioRepository.save(Portfolio.builder().user(user).build());
+        log.info("[회원가입] 완료 (Portfolio 자동 생성): {}", request.getEmail());
     }
 
     @Transactional
