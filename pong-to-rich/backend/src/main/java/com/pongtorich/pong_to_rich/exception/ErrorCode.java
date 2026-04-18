@@ -32,6 +32,11 @@ public enum ErrorCode {
     WATCHLIST_DUPLICATE(HttpStatus.CONFLICT, "이미 관심 종목으로 등록된 종목입니다."),
     WATCHLIST_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 관심 종목에 대한 권한이 없습니다."),
 
+    // Strategy
+    STRATEGY_NOT_FOUND(HttpStatus.NOT_FOUND, "전략을 찾을 수 없습니다."),
+    STRATEGY_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 전략에 대한 권한이 없습니다."),
+    STRATEGY_INVALID_STATUS(HttpStatus.BAD_REQUEST, "현재 상태에서 변경할 수 없습니다."),
+
     // Common
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.");
 
