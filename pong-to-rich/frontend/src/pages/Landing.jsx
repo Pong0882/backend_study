@@ -22,6 +22,9 @@ export default function Landing() {
         <a href={`${import.meta.env.VITE_API_BASE_URL || ''}/swagger-ui/index.html`} target="_blank" rel="noreferrer" className="bg-card text-muted border border-border px-6 py-3 rounded-lg font-semibold hover:text-white transition-colors">
           API 문서 (Swagger)
         </a>
+        <a href="https://github.com/Pong0882/Backend-A-to-Z" target="_blank" rel="noreferrer" className="bg-card text-muted border border-border px-6 py-3 rounded-lg font-semibold hover:text-white transition-colors">
+          GitHub
+        </a>
       </div>
       <blockquote className="mt-16 border-l-4 border-primary pl-6 text-left max-w-xl">
         <p className="text-muted italic leading-relaxed">
