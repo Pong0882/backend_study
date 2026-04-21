@@ -13,7 +13,7 @@ export default function Navbar() {
   return (
     <nav className="bg-card border-b border-border px-6 py-3 flex items-center justify-between">
       <Link to="/" className="text-white font-bold text-lg">
-        🏓 Pong to Rich
+        🏓 Pongtrader
       </Link>
       <div className="flex items-center gap-6 text-sm text-muted">
         <Link to="/stocks" className="hover:text-white transition-colors">시세</Link>

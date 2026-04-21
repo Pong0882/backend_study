@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 export default function Landing() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-56px)] text-center px-6">
-      <img src="/logo.png" alt="Pong to Rich 로고" className="w-48 h-48 rounded-full shadow-2xl mb-8" />
-      <h1 className="text-5xl font-bold text-white mb-4">Pong to Rich</h1>
+      <img src="/logo.png" alt="Pongtrader 로고" className="w-48 h-48 rounded-full shadow-2xl mb-8" />
+      <h1 className="text-5xl font-bold text-white mb-4">Pongtrader</h1>
       <p className="text-muted text-lg mb-2">
         AI 기반 주식 자동매매 플랫폼<br />
         한국투자증권 API 연동 · 실시간 시세 조회 · 자동 매매 전략
