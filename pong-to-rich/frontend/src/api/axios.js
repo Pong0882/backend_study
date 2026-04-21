@@ -1,7 +1,13 @@
 import axios from 'axios'
 
+// 로컬: Vite proxy로 /api → localhost:8080 (상대경로)
+// 프로덕션: VITE_API_BASE_URL=https://api.pongtrader.pro (빌드 시 환경변수 주입)
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/api`
+  : '/api'
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: BASE_URL,
 })
 
 // 요청 인터셉터 — 모든 요청에 Access Token 자동 첨부
@@ -23,7 +29,7 @@ api.interceptors.response.use(
       original._retry = true
       try {
         const refreshToken = localStorage.getItem('refreshToken')
-        const { data } = await axios.post('/api/auth/refresh', { refreshToken })
+        const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken })
         localStorage.setItem('accessToken', data.data.accessToken)
         original.headers.Authorization = `Bearer ${data.data.accessToken}`
         return api(original)
