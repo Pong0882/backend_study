@@ -1,0 +1,18 @@
+services:
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    container_name: pong-to-rich-frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    networks:
+      - pong-network
+
+networks:
+  pong-network:
+    external: true  # docker network create pong-network 으로 미리 생성 필요

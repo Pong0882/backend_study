@@ -9,9 +9,9 @@
 
 | 구분 | 완료 | 미완료 | 합계 | 완료율 |
 |------|------|--------|------|--------|
-| 이론 정리 | 34 | 294 | 328 | 10.4% |
-| 실습 | 14 | 295 | 309 | 4.5% |
-| **전체** | **48** | **589** | **637** | **7.5%** |
+| 이론 정리 | 36 | 292 | 328 | 11.0% |
+| 실습 | 17 | 292 | 309 | 5.5% |
+| **전체** | **53** | **584** | **637** | **8.3%** |
 
 > 이 표는 항목 완료 시 수동으로 업데이트한다.
 
@@ -704,7 +704,7 @@
 ### 14-3. 보안 취약점 방어
 
 - [ ] OWASP Top 10 각 항목 정리 및 Spring에서 방어 방법 정리
-- [x] CORS 동작 원리 정리 (Preflight, Simple Request) → [정리](./notes/phase-14-security-jwt/spring-security.md)
+- [x] CORS 동작 원리 정리 (Preflight, Simple Request) → [정리](./notes/phase-14-security-jwt/cors.md)
 - [x] CSRF 공격 원리 및 방어 정리 → [정리](./notes/phase-14-security-jwt/spring-security.md)
 - [ ] XSS 공격 원리 및 방어 정리
 - [ ] SQL Injection 방어 정리 (PreparedStatement, JPA 파라미터 바인딩)
@@ -713,7 +713,7 @@
 - [ ] **전역 예외 처리 정리** (`@RestControllerAdvice` / `ErrorCode` Enum / 에러 응답 포맷 통일)
 - [ ] 실습: `@Valid` + `@RestControllerAdvice` 입력 검증 및 예외 처리 구현
 - [ ] 실습: Spring Security 설정으로 보안 헤더 일괄 적용
-- [ ] 실습: CORS 설정 (허용 Origin / Method / Header 세분화) — Swagger Mixed Content 해결 포함
+- [x] 실습: CORS 설정 (허용 Origin / Method / Header 세분화) — Swagger Mixed Content 해결 포함 → [정리](./notes/phase-14-security-jwt/cors.md)
 - [ ] 실습: SQL Injection / XSS 공격 재현 및 방어 구현
 
 ### 14-4. Rate Limiting & API Throttling
@@ -1006,14 +1006,15 @@
 
 ### 22-1. 이론
 
-- [ ] NGINX 동작 원리 정리 (이벤트 기반 비동기 아키텍처)
-- [ ] Reverse Proxy 개념 및 로드밸런싱 알고리즘 정리 (RR / Least Conn / IP Hash)
+- [x] NGINX 동작 원리 정리 (이벤트 기반 비동기 아키텍처) → [정리](./notes/phase-22-nginx/nginx-basics.md)
+- [x] Reverse Proxy 개념 및 로드밸런싱 알고리즘 정리 (RR / Least Conn / IP Hash) → [정리](./notes/phase-22-nginx/nginx-basics.md)
 - [ ] TLS/SSL 핸드셰이크 과정 정리 (대칭키 / 비대칭키)
 - [ ] HTTP/1.1 vs HTTP/2 vs HTTP/3 차이 정리 (멀티플렉싱, QUIC)
 
 ### 22-2. 실습
 
-- [ ] 실습: NGINX Reverse Proxy 설정 (Spring Boot 앞단 배치)
+- [x] 실습: NGINX Reverse Proxy 설정 (Spring Boot 앞단 배치) → [정리](./notes/phase-22-nginx/nginx-basics.md)
+- [x] 실습: Docker Compose external network로 다중 compose 파일 연결 → [정리](./notes/phase-22-nginx/docker-multi-compose-network.md)
 - [ ] 실습: NGINX upstream 헬스체크 / keepalive / 버퍼 튜닝
 - [ ] 실습: Certbot으로 Let's Encrypt SSL 인증서 발급 및 자동 갱신
 - [ ] 실습: HTTPS 리다이렉트 및 HSTS 설정
