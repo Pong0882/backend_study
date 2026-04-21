@@ -4,8 +4,68 @@
 
 웹 서버 + 리버스 프록시 + 로드 밸런서를 하나로 처리하는 소프트웨어.
 
-Apache와 달리 **이벤트 기반(event-driven) + 비동기(async) 단일 프로세스** 모델로 동작.
+Apache와 달리 **이벤트 기반(event-driven) + 비동기(async)** 모델로 동작.
 연결 하나당 스레드를 생성하지 않아서 동시 연결이 많아도 메모리를 거의 안 씀.
+
+---
+
+## 동작 원리 — Apache와 비교
+
+### Apache (스레드/프로세스 기반)
+
+```
+연결 1 → Worker 스레드 1 (점유, 응답 끝날 때까지 대기)
+연결 2 → Worker 스레드 2 (점유)
+연결 3 → Worker 스레드 3 (점유)
+연결 1000 → 스레드 부족 → 큐 대기 or 거절
+```
+
+요청 하나당 스레드 하나를 독점. 스레드는 스택 메모리(보통 1~8MB)를 점유.
+동시 연결 1000개 → 스레드 1000개 → 메모리 수 GB 소비.
+I/O 대기 중(DB 쿼리, 파일 읽기)에도 스레드가 블로킹되어 낭비.
+
+### Nginx (이벤트 기반 비동기)
+
+```
+Master Process (1개) — 설정 읽기, Worker 관리
+    └── Worker Process (CPU 코어 수만큼)
+            └── 수천 개의 연결을 단일 스레드로 처리
+```
+
+**epoll (Linux 커널 I/O 이벤트 통지 메커니즘):**
+
+```
+Worker가 epoll에 소켓들을 등록
+    ↓
+epoll이 "이 소켓에 데이터 왔어요" 이벤트 통지
+    ↓
+Worker가 해당 소켓만 처리
+    ↓
+다시 epoll 대기 (다른 연결 처리 가능)
+```
+
+I/O 대기 중에 Worker는 다른 연결의 이벤트를 처리. 블로킹 없음.
+Worker 하나가 수만 개의 동시 연결을 처리 가능.
+
+**worker_processes, worker_connections 설정:**
+
+```nginx
+# nginx.conf
+worker_processes auto;        # CPU 코어 수만큼 자동 설정
+
+events {
+    worker_connections 1024;  # Worker 하나당 최대 동시 연결 수
+}
+# 최대 동시 연결 = worker_processes × worker_connections
+```
+
+**Nginx가 Apache보다 빠른 이유 요약:**
+- 스레드 생성/소멸 오버헤드 없음
+- 컨텍스트 스위칭 최소화
+- I/O 대기 중 다른 연결 처리 가능
+- 메모리 사용량 압도적으로 적음
+
+---
 
 ### Nginx가 할 수 있는 것
 
@@ -219,6 +279,102 @@ upstream backend {
 | 세션을 서버 로컬에 저장 | IP Hash |
 | 서버 스펙이 다름 | Weight |
 | pong-to-rich (현재 단일 서버) | 해당 없음, 나중에 스케일 아웃 시 고려 |
+
+---
+
+## keepalive — 연결 재사용
+
+HTTP 요청마다 TCP 연결을 새로 맺으면 3-way handshake 비용이 발생.
+keepalive는 연결을 유지해서 재사용.
+
+**클라이언트 ↔ Nginx keepalive** (기본 활성화):
+```nginx
+keepalive_timeout 65;   # 65초 동안 연결 유지
+keepalive_requests 100; # 연결 하나로 최대 100 요청 처리
+```
+
+**Nginx ↔ 백엔드 keepalive** (upstream):
+```nginx
+upstream backend {
+    server app:8080;
+    keepalive 32;  # 백엔드와 최대 32개 연결 유지
+}
+
+server {
+    location / {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;          # keepalive는 HTTP/1.1 필요
+        proxy_set_header Connection "";  # Connection: close 헤더 제거
+    }
+}
+```
+
+Nginx ↔ 백엔드 keepalive 없으면 요청마다 TCP 연결 생성 → Spring Boot 부하 증가.
+
+---
+
+## 버퍼 튜닝
+
+Nginx가 백엔드 응답을 버퍼에 담아두고 클라이언트에 전송.
+버퍼가 너무 작으면 디스크에 임시 저장(느림), 너무 크면 메모리 낭비.
+
+```nginx
+proxy_buffer_size   4k;    # 응답 헤더를 담는 버퍼
+proxy_buffers       8 4k;  # 응답 바디를 담는 버퍼 (8개 × 4KB = 32KB)
+proxy_busy_buffers_size 8k;
+```
+
+**언제 튜닝하나:**
+- 백엔드 응답이 크고 느린 클라이언트가 많을 때 → 버퍼 크게
+- 메모리가 부족할 때 → 버퍼 작게 + 디스크 캐시 활용
+- 일반적인 API 서버는 기본값으로도 충분
+
+---
+
+## upstream 헬스체크
+
+백엔드 서버가 죽었을 때 자동으로 해당 서버를 제외하는 기능.
+
+**passive 헬스체크 (기본, 무료):**
+
+실제 요청이 실패했을 때 감지. 별도 설정 없이 동작.
+
+```nginx
+upstream backend {
+    server app1:8080 max_fails=3 fail_timeout=30s;
+    # 30초 안에 3번 실패하면 30초 동안 해당 서버 제외
+    server app2:8080 max_fails=3 fail_timeout=30s;
+}
+```
+
+**active 헬스체크 (Nginx Plus 유료 기능):**
+
+주기적으로 헬스체크 엔드포인트를 직접 호출해서 확인.
+오픈소스 Nginx에서는 `nginx_upstream_check_module` 써드파티 모듈로 구현 가능.
+
+---
+
+## 로그 포맷 커스터마이징
+
+기본 로그보다 더 많은 정보를 남길 수 있음.
+
+```nginx
+http {
+    log_format main '$remote_addr - $remote_user [$time_local] '
+                    '"$request" $status $body_bytes_sent '
+                    '"$http_referer" "$http_user_agent" '
+                    '$request_time $upstream_response_time';
+                    # request_time: 전체 요청 처리 시간
+                    # upstream_response_time: 백엔드 응답 시간 (병목 분석용)
+
+    access_log /var/log/nginx/access.log main;
+    error_log  /var/log/nginx/error.log warn;
+}
+```
+
+`$upstream_response_time` — Nginx가 백엔드에 요청 보내고 응답 받기까지 시간.
+`$request_time`에서 `$upstream_response_time`을 빼면 Nginx 자체 처리 시간.
+응답이 느릴 때 병목이 Nginx인지 백엔드인지 구분 가능.
 
 ---
 
