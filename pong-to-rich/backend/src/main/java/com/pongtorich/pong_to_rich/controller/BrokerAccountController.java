@@ -63,6 +63,20 @@ public class BrokerAccountController {
                 brokerAccountService.getAccount(authentication.getName(), accountId)));
     }
 
+    @Operation(summary = "증권사 계좌 활성화")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "활성화 성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "계좌 없음")
+    })
+    @PatchMapping("/{accountId}/activate")
+    public ResponseEntity<ApiResult<Void>> activate(
+            @PathVariable Long accountId,
+            Authentication authentication) {
+        brokerAccountService.activate(authentication.getName(), accountId);
+        return ResponseEntity.ok(ApiResult.ok());
+    }
+
     @Operation(summary = "증권사 계좌 비활성화")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비활성화 성공"),

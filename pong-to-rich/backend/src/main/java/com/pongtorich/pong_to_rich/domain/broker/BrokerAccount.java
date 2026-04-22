@@ -96,6 +96,10 @@ public class BrokerAccount {
         this.isActive = false;
     }
 
+    public void activate() {
+        this.isActive = true;
+    }
+
     public enum Broker {
         KIS,      // 한국투자증권
         KIWOOM,   // 키움증권

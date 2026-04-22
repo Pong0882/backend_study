@@ -26,6 +26,8 @@ public enum ErrorCode {
     BROKER_ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "증권사 계좌를 찾을 수 없습니다."),
     BROKER_ACCOUNT_DUPLICATE(HttpStatus.CONFLICT, "이미 등록된 증권사 계좌입니다."),
     BROKER_ACCOUNT_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 증권사 계좌에 대한 권한이 없습니다."),
+    BROKER_ACCOUNT_INVALID_KEY(HttpStatus.BAD_REQUEST, "유효하지 않은 API 키입니다. appkey/appsecret을 확인해주세요."),
+    BROKER_ACCOUNT_KIS_RATE_LIMIT(HttpStatus.TOO_MANY_REQUESTS, "KIS API 토큰 발급 한도를 초과했습니다. 1분 후 다시 시도해주세요."),
 
     // Watchlist
     WATCHLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "관심 종목을 찾을 수 없습니다."),
