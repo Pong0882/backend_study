@@ -40,6 +40,16 @@ export default function BrokerAccounts() {
     }
   }
 
+  async function handleActivate(id) {
+    if (!confirm('계좌를 활성화하시겠습니까?')) return
+    try {
+      await api.patch(`/broker-accounts/${id}/activate`)
+      fetchList()
+    } catch (err) {
+      setError(err.response?.data?.message || '활성화에 실패했습니다.')
+    }
+  }
+
   async function handleDeactivate(id) {
     if (!confirm('계좌를 비활성화하시겠습니까?')) return
     try {
@@ -136,17 +146,24 @@ export default function BrokerAccounts() {
               <p className="text-white font-semibold">{a.broker}</p>
               <p className="text-muted text-sm mt-0.5">
                 {a.accountType === 'MOCK' ? '모의투자' : '실전투자'} ·{' '}
-                <span className={a.active ? 'text-green-400' : 'text-up'}>
-                  {a.active ? '활성' : '비활성'}
+                <span className={a.isActive ? 'text-green-400' : 'text-up'}>
+                  {a.isActive ? '활성' : '비활성'}
                 </span>
               </p>
             </div>
-            {a.active && (
+            {a.isActive ? (
               <button
                 onClick={() => handleDeactivate(a.id)}
                 className="text-xs text-up hover:underline"
               >
                 비활성화
+              </button>
+            ) : (
+              <button
+                onClick={() => handleActivate(a.id)}
+                className="text-xs text-green-400 hover:underline"
+              >
+                활성화
               </button>
             )}
           </div>
