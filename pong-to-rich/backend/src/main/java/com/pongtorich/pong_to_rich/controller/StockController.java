@@ -8,6 +8,7 @@ import com.pongtorich.pong_to_rich.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +37,21 @@ public class StockController {
         return ResponseEntity.ok(ApiResult.ok(stockService.getStockPrice(stockCode)));
     }
 
-    // GET /api/stocks/005930/prices → DB에 저장된 일봉 데이터 조회
-    @Operation(summary = "저장된 일봉 데이터 조회")
+    // GET /api/stocks/005930/prices?page=0&size=50 → 일봉 테이블용 페이지네이션
+    @Operation(summary = "저장된 일봉 데이터 조회 (페이지네이션)")
     @GetMapping("/{stockCode}/prices")
-    public ResponseEntity<ApiResult<List<StockPriceResponse>>> getDailyPrices(@PathVariable String stockCode) {
-        return ResponseEntity.ok(ApiResult.ok(stockService.getDailyPrices(stockCode)));
+    public ResponseEntity<ApiResult<Page<StockPriceResponse>>> getDailyPrices(
+            @PathVariable String stockCode,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        return ResponseEntity.ok(ApiResult.ok(stockService.getDailyPrices(stockCode, page, size)));
+    }
+
+    // GET /api/stocks/005930/prices/chart → 차트용 전체 데이터
+    @Operation(summary = "차트용 전체 일봉 데이터 조회")
+    @GetMapping("/{stockCode}/prices/chart")
+    public ResponseEntity<ApiResult<List<StockPriceResponse>>> getChartPrices(@PathVariable String stockCode) {
+        return ResponseEntity.ok(ApiResult.ok(stockService.getAllDailyPrices(stockCode)));
     }
 
     // POST /api/stocks/005930/fetch?startDate=20240101&endDate=20241231

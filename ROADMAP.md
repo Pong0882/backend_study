@@ -10,8 +10,8 @@
 | 구분 | 완료 | 미완료 | 합계 | 완료율 |
 |------|------|--------|------|--------|
 | 이론 정리 | 36 | 292 | 328 | 11.0% |
-| 실습 | 17 | 292 | 309 | 5.5% |
-| **전체** | **53** | **584** | **637** | **8.3%** |
+| 실습 | 18 | 291 | 309 | 5.8% |
+| **전체** | **54** | **583** | **637** | **8.5%** |
 
 > 이 표는 항목 완료 시 수동으로 업데이트한다.
 
@@ -1016,6 +1016,7 @@
 - [x] 실습: NGINX Reverse Proxy 설정 (Spring Boot 앞단 배치) → [정리](./notes/phase-22-nginx/nginx-basics.md)
 - [x] 실습: Docker Compose external network로 다중 compose 파일 연결 → [정리](./notes/phase-22-nginx/docker-multi-compose-network.md)
 - [ ] 실습: NGINX upstream 헬스체크 / keepalive / 버퍼 튜닝
+- [x] 트러블슈팅: Mixed Content (Cloudflare SSL Termination + SpringDoc 서버 URL) → [정리](./notes/phase-22-nginx/mixed-content.md)
 - [ ] 실습: Certbot으로 Let's Encrypt SSL 인증서 발급 및 자동 갱신
 - [ ] 실습: HTTPS 리다이렉트 및 HSTS 설정
 - [ ] 실습: HTTP/2 활성화 및 성능 비교
