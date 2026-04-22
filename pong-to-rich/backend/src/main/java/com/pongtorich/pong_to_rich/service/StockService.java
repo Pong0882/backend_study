@@ -14,6 +14,8 @@ import com.pongtorich.pong_to_rich.exception.BusinessException;
 import com.pongtorich.pong_to_rich.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
@@ -76,9 +78,19 @@ public class StockService {
         return objectMapper.convertValue(output, KisStockPriceResponse.class);
     }
 
-    // DB에 저장된 일봉 데이터 조회 (최신순)
+    // DB에 저장된 일봉 데이터 조회 (최신순, 페이지네이션)
     @Transactional(readOnly = true)
-    public List<StockPriceResponse> getDailyPrices(String stockCode) {
+    public Page<StockPriceResponse> getDailyPrices(String stockCode, int page, int size) {
+        Stock stock = stockRepository.findByCode(stockCode)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STOCK_NOT_FOUND));
+
+        return stockPriceRepository.findByStockOrderByTradeDateDesc(stock, PageRequest.of(page, size))
+                .map(StockPriceResponse::from);
+    }
+
+    // 차트용 전체 일봉 데이터 조회 (최신순)
+    @Transactional(readOnly = true)
+    public List<StockPriceResponse> getAllDailyPrices(String stockCode) {
         Stock stock = stockRepository.findByCode(stockCode)
                 .orElseThrow(() -> new BusinessException(ErrorCode.STOCK_NOT_FOUND));
 

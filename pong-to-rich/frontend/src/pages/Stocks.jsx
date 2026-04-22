@@ -8,7 +8,9 @@ export default function Stocks() {
   const [stocks, setStocks] = useState([])
   const [selected, setSelected] = useState(null)
   const [currentPrice, setCurrentPrice] = useState(null)
-  const [prices, setPrices] = useState([])
+  const [chartPrices, setChartPrices] = useState([])   // 차트용 전체 데이터
+  const [prices, setPrices] = useState([])              // 테이블용 현재 페이지 데이터
+  const [pagination, setPagination] = useState({ page: 0, totalPages: 0, totalElements: 0 })
   const [loading, setLoading] = useState(false)
   const [fetchForm, setFetchForm] = useState({ startDate: '', endDate: '' })
   const [fetching, setFetching] = useState(false)
@@ -31,27 +33,47 @@ export default function Stocks() {
     if (!selected) return
     setLoading(true)
     setCurrentPrice(null)
+    setChartPrices([])
     setPrices([])
+    setPagination({ page: 0, totalPages: 0, totalElements: 0 })
 
-    // 현재가 (KIS 실시간)
     api.get(`/stocks/${selected.code}`).then(({ data }) => {
       setCurrentPrice(data.data)
     }).catch(() => {})
 
-    // 일봉 데이터
-    api.get(`/stocks/${selected.code}/prices`).then(({ data }) => {
-      setPrices(data.data || [])
-    }).catch(() => {}).finally(() => setLoading(false))
+    // 차트용 전체 데이터
+    api.get(`/stocks/${selected.code}/prices/chart`).then(({ data }) => {
+      setChartPrices(data.data || [])
+    }).catch(() => {})
+
+    // 테이블용 첫 페이지
+    fetchPage(selected.code, 0).finally(() => setLoading(false))
   }, [selected])
+
+  async function fetchPage(code, page) {
+    const { data } = await api.get(`/stocks/${code}/prices`, { params: { page, size: 50 } })
+    const pageData = data.data
+    setPrices(pageData.content || [])
+    setPagination({
+      page: pageData.number,
+      totalPages: pageData.totalPages,
+      totalElements: pageData.totalElements,
+    })
+  }
+
+  function handlePageChange(page) {
+    if (!selected) return
+    fetchPage(selected.code, page)
+  }
 
   // 차트 렌더링
   useEffect(() => {
-    if (!prices.length || !candleRef.current || !volumeRef.current) return
+    if (!chartPrices.length || !candleRef.current || !volumeRef.current) return
 
     if (candleChart.current) { candleChart.current.remove(); candleChart.current = null }
     if (volumeChart.current) { volumeChart.current.remove(); volumeChart.current = null }
 
-    const sorted = [...prices].reverse()
+    const sorted = [...chartPrices].reverse()
     const commonOpts = {
       layout: { background: { color: '#263445' }, textColor: '#a0b0c0' },
       grid: { vertLines: { color: '#2c3e50' }, horzLines: { color: '#2c3e50' } },
@@ -81,7 +103,7 @@ export default function Stocks() {
     volumeChart.current = vc
 
     return () => window.removeEventListener('resize', onResize)
-  }, [prices])
+  }, [chartPrices])
 
   const latest = prices[0]
   const prev = prices[1]
@@ -106,9 +128,11 @@ export default function Stocks() {
         params: { startDate: fetchForm.startDate.replace(/-/g, ''), endDate: fetchForm.endDate.replace(/-/g, '') }
       })
       setFetchMsg(`${data.data.savedCount}건 저장 완료`)
-      // 데이터 새로고침
-      const res = await api.get(`/stocks/${selected.code}/prices`)
-      setPrices(res.data.data || [])
+      const [chartRes] = await Promise.all([
+        api.get(`/stocks/${selected.code}/prices/chart`),
+        fetchPage(selected.code, 0),
+      ])
+      setChartPrices(chartRes.data.data || [])
     } catch (err) {
       setFetchMsg(err.response?.data?.message || '수집 실패')
     } finally {
@@ -203,7 +227,7 @@ export default function Stocks() {
       </div>
 
       {/* 캔들차트 */}
-      {prices.length > 0 && (
+      {chartPrices.length > 0 && (
         <div className="bg-card border border-border rounded-xl overflow-hidden mb-6">
           <div className="px-6 py-4 border-b border-border text-sm text-muted font-semibold">
             캔들차트 · {selected?.name} ({selected?.code})
@@ -215,36 +239,76 @@ export default function Stocks() {
 
       {/* 일봉 테이블 */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-border text-sm text-muted font-semibold">
-          일봉 데이터 · {selected?.name || ''}
+        <div className="px-6 py-4 border-b border-border text-sm text-muted font-semibold flex justify-between items-center">
+          <span>일봉 데이터 · {selected?.name || ''}</span>
+          {pagination.totalElements > 0 && (
+            <span className="text-xs text-muted">총 {pagination.totalElements.toLocaleString()}건</span>
+          )}
         </div>
         {loading && <p className="text-muted text-center py-12">불러오는 중...</p>}
         {!loading && prices.length === 0 && <p className="text-muted text-center py-12">저장된 데이터가 없습니다.</p>}
         {prices.length > 0 && (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-muted">
-                <th className="text-left px-4 py-3">날짜</th>
-                <th className="text-right px-4 py-3">시가</th>
-                <th className="text-right px-4 py-3">고가</th>
-                <th className="text-right px-4 py-3">저가</th>
-                <th className="text-right px-4 py-3">종가</th>
-                <th className="text-right px-4 py-3">거래량</th>
-              </tr>
-            </thead>
-            <tbody>
-              {prices.map((d) => (
-                <tr key={d.tradeDate} className="border-b border-surface hover:bg-surface transition-colors">
-                  <td className="text-left px-4 py-2.5 text-muted">{d.tradeDate}</td>
-                  <td className="text-right px-4 py-2.5">{fmt(d.openPrice)}</td>
-                  <td className="text-right px-4 py-2.5 text-up">{fmt(d.highPrice)}</td>
-                  <td className="text-right px-4 py-2.5 text-down">{fmt(d.lowPrice)}</td>
-                  <td className={`text-right px-4 py-2.5 font-medium ${d.closePrice >= d.openPrice ? 'text-up' : 'text-down'}`}>{fmt(d.closePrice)}</td>
-                  <td className="text-right px-4 py-2.5 text-muted">{fmt(d.volume)}</td>
+          <>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-muted">
+                  <th className="text-left px-4 py-3">날짜</th>
+                  <th className="text-right px-4 py-3">시가</th>
+                  <th className="text-right px-4 py-3">고가</th>
+                  <th className="text-right px-4 py-3">저가</th>
+                  <th className="text-right px-4 py-3">종가</th>
+                  <th className="text-right px-4 py-3">거래량</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {prices.map((d) => (
+                  <tr key={d.tradeDate} className="border-b border-surface hover:bg-surface transition-colors">
+                    <td className="text-left px-4 py-2.5 text-muted">{d.tradeDate}</td>
+                    <td className="text-right px-4 py-2.5">{fmt(d.openPrice)}</td>
+                    <td className="text-right px-4 py-2.5 text-up">{fmt(d.highPrice)}</td>
+                    <td className="text-right px-4 py-2.5 text-down">{fmt(d.lowPrice)}</td>
+                    <td className={`text-right px-4 py-2.5 font-medium ${d.closePrice >= d.openPrice ? 'text-up' : 'text-down'}`}>{fmt(d.closePrice)}</td>
+                    <td className="text-right px-4 py-2.5 text-muted">{fmt(d.volume)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 페이지네이션 버튼 */}
+            {pagination.totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 px-4 py-4 border-t border-border">
+                <button
+                  onClick={() => handlePageChange(pagination.page - 1)}
+                  disabled={pagination.page === 0}
+                  className="px-3 py-1.5 rounded text-sm bg-surface text-muted hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  이전
+                </button>
+                {Array.from({ length: pagination.totalPages }, (_, i) => i)
+                  .filter(i => Math.abs(i - pagination.page) <= 2)
+                  .map(i => (
+                    <button
+                      key={i}
+                      onClick={() => handlePageChange(i)}
+                      className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                        i === pagination.page
+                          ? 'bg-primary text-white'
+                          : 'bg-surface text-muted hover:text-white'
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                <button
+                  onClick={() => handlePageChange(pagination.page + 1)}
+                  disabled={pagination.page === pagination.totalPages - 1}
+                  className="px-3 py-1.5 rounded text-sm bg-surface text-muted hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  다음
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
