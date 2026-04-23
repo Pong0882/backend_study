@@ -4,6 +4,19 @@ import api from '../api/axios'
 
 const fmt = (n) => Number(n).toLocaleString('ko-KR')
 
+const POLL_INTERVAL = 10_000 // 10초
+
+// 장 운영 시간 여부 (평일 09:00~15:30)
+function isMarketOpen() {
+  const now = new Date()
+  const day = now.getDay()
+  if (day === 0 || day === 6) return false
+  const h = now.getHours()
+  const m = now.getMinutes()
+  const total = h * 60 + m
+  return total >= 9 * 60 && total < 15 * 60 + 30
+}
+
 export default function Stocks() {
   const [stocks, setStocks] = useState([])
   const [selected, setSelected] = useState(null)
@@ -15,11 +28,13 @@ export default function Stocks() {
   const [fetchForm, setFetchForm] = useState({ startDate: '', endDate: '' })
   const [fetching, setFetching] = useState(false)
   const [fetchMsg, setFetchMsg] = useState('')
+  const [polling, setPolling] = useState(false)
 
   const candleRef = useRef(null)
   const volumeRef = useRef(null)
   const candleChart = useRef(null)
   const volumeChart = useRef(null)
+  const pollTimer = useRef(null)
 
   useEffect(() => {
     api.get('/stocks').then(({ data }) => {
@@ -48,6 +63,26 @@ export default function Stocks() {
 
     // 테이블용 첫 페이지
     fetchPage(selected.code, 0).finally(() => setLoading(false))
+
+    // 폴링 시작 — 종목 변경 시 이전 타이머 정리 후 재시작
+    clearInterval(pollTimer.current)
+    if (isMarketOpen()) {
+      setPolling(true)
+      pollTimer.current = setInterval(() => {
+        if (!isMarketOpen()) {
+          clearInterval(pollTimer.current)
+          setPolling(false)
+          return
+        }
+        api.get(`/stocks/${selected.code}`).then(({ data }) => {
+          setCurrentPrice(data.data)
+        }).catch(() => {})
+      }, POLL_INTERVAL)
+    } else {
+      setPolling(false)
+    }
+
+    return () => clearInterval(pollTimer.current)
   }, [selected])
 
   async function fetchPage(code, page) {
@@ -203,7 +238,11 @@ export default function Stocks() {
           return (
             <>
               <p className="text-lg font-bold text-white">{selected.name}</p>
-              <p className="text-sm text-muted mb-3">{selected.code} · {isRealtime ? '실시간' : `기준일: ${latest?.tradeDate}`}</p>
+              <p className="text-sm text-muted mb-3">
+                {selected.code} · {isRealtime ? '실시간' : `기준일: ${latest?.tradeDate}`}
+                {polling && <span className="ml-2 text-green-400">● 10초 갱신 중</span>}
+                {!polling && <span className="ml-2 text-muted">● 장 마감</span>}
+              </p>
               <p className={`text-3xl font-bold ${priceColor(diff)}`}>{fmt(price)} <span className="text-base">원</span></p>
               <div className="flex gap-6 mt-3 text-sm text-muted">
                 <span className={priceColor(diff)}>{signIcon(diff)} {fmt(Math.abs(diff))} ({rate}%)</span>

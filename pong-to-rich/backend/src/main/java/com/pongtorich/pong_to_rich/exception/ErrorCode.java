@@ -18,6 +18,7 @@ public enum ErrorCode {
 
     // KIS
     KIS_AUTH_FAILED(HttpStatus.BAD_GATEWAY, "한국투자증권 토큰 발급에 실패했습니다."),
+    KIS_ORDER_FAILED(HttpStatus.BAD_GATEWAY, "한국투자증권 주문 전송에 실패했습니다."),
 
     // Stock
     STOCK_NOT_FOUND(HttpStatus.NOT_FOUND, "종목을 찾을 수 없습니다."),

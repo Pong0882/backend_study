@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import api from '../api/axios'
 
-const INIT_FORM = { broker: 'KIS', accountType: 'MOCK', appkey: '', appsecret: '' }
+const INIT_FORM = { broker: 'KIS', accountType: 'MOCK', accountNumber: '', appkey: '', appsecret: '' }
 
 export default function BrokerAccounts() {
   const [list, setList] = useState([])
@@ -99,6 +99,16 @@ export default function BrokerAccounts() {
                 <option value="REAL">실전투자</option>
               </select>
             </div>
+          </div>
+          <div>
+            <label className="text-muted text-sm mb-1 block">계좌번호 (앞 8자리)</label>
+            <input
+              placeholder="예: 50123456"
+              value={form.accountNumber}
+              onChange={(e) => setForm({ ...form, accountNumber: e.target.value })}
+              className="w-full bg-surface border border-border rounded-lg px-4 py-2.5 text-white placeholder-muted focus:outline-none focus:border-primary font-mono text-sm"
+              required
+            />
           </div>
           <div>
             <label className="text-muted text-sm mb-1 block">App Key</label>

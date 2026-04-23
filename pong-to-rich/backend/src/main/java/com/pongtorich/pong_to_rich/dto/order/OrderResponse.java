@@ -18,6 +18,7 @@ public record OrderResponse(
         @Schema(description = "체결 수량") Integer filledQuantity,
         @Schema(description = "지정가") BigDecimal price,
         @Schema(description = "전략 ID (자동매매 주문이면 있음, 수동이면 null)") Long strategyId,
+        @Schema(description = "KIS 주문 접수 번호") String kisOrderNo,
         @Schema(description = "주문 생성일시") LocalDateTime createdAt
 ) {
     public static OrderResponse from(Order order) {
@@ -32,6 +33,7 @@ public record OrderResponse(
                 order.getFilledQuantity(),
                 order.getPrice(),
                 order.getStrategy() != null ? order.getStrategy().getId() : null,
+                order.getKisOrderNo(),
                 order.getCreatedAt()
         );
     }

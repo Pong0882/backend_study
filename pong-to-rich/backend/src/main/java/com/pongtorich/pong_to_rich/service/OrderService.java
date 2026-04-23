@@ -34,6 +34,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final BrokerAccountRepository brokerAccountRepository;
     private final StockRepository stockRepository;
+    private final KisOrderService kisOrderService;
 
     // 수동 주문 생성
     @Transactional
@@ -75,9 +76,16 @@ public class OrderService {
                 .price(request.getPrice())
                 .build();
 
-        // TODO: 실제 KIS API 주문 전송 후 체결 콜백 처리 필요 — Issue로 등록 예정
-        OrderResponse response = OrderResponse.from(orderRepository.save(order));
-        log.info("[주문] 생성 완료: {} — ID: {}", email, response.id());
+        orderRepository.save(order);
+        log.info("[주문] DB 저장 완료 — ID: {}", order.getId());
+
+        // KIS 주문 전송 — 실패 시 BusinessException 발생 → 트랜잭션 롤백 → DB 저장도 취소
+        // 1단계: 동기 처리. 추후 비동기(@Async)로 교체 예정
+        String kisOrderNo = kisOrderService.sendOrder(order, brokerAccount);
+        order.assignKisOrderNo(kisOrderNo);
+
+        OrderResponse response = OrderResponse.from(order);
+        log.info("[주문] 생성 완료: {} — ID: {}, kisOrderNo: {}", email, response.id(), kisOrderNo);
         return response;
     }
 

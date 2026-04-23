@@ -39,6 +39,10 @@ public class BrokerAccount {
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
+    // KIS 계좌번호 (CANO) — 주문 API 호출 시 필요, 앞 8자리
+    @Column(nullable = false, length = 20)
+    private String accountNumber;
+
     // KIS API 인증 키 — AES-256 암호화 후 DB 저장 (AesEncryptor)
     @Convert(converter = AesEncryptor.class)
     @Column(nullable = false, length = 500)
@@ -78,10 +82,11 @@ public class BrokerAccount {
 
     @Builder
     public BrokerAccount(User user, Broker broker, AccountType accountType,
-                         String appkey, String appsecret) {
+                         String accountNumber, String appkey, String appsecret) {
         this.user = user;
         this.broker = broker;
         this.accountType = accountType;
+        this.accountNumber = accountNumber;
         this.appkey = appkey;
         this.appsecret = appsecret;
         this.isActive = true;

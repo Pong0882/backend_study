@@ -62,6 +62,10 @@ public class Order {
     @Column(precision = 12, scale = 4)
     private BigDecimal price;
 
+    // KIS 주문 접수 번호 — 체결 조회 시 사용
+    @Column
+    private String kisOrderNo;
+
     // 실제로 체결된 수량 (부분 체결 대응)
     @Column(nullable = false)
     private Integer filledQuantity = 0;
@@ -96,6 +100,10 @@ public class Order {
         this.price = price;
         this.status = OrderStatus.PENDING;
         this.filledQuantity = 0;
+    }
+
+    public void assignKisOrderNo(String kisOrderNo) {
+        this.kisOrderNo = kisOrderNo;
     }
 
     public void fill(int filledQuantity) {

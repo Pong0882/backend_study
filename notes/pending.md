@@ -17,6 +17,8 @@
 | Zero Trust | Cloudflare 터널 사용 중 언급됨. "절대 믿지 말고 항상 검증" 보안 모델. | day02-infra | ✅ [정리](phase-14-security-jwt/zero-trust.md) |
 | Refresh Token 재발급 속도 측정 | Access Token 만료 시 두 번 왕복하는 비용이 실제로 얼마인지 Postman으로 측정. 이후 Redis 전환 시 DB vs Redis 응답속도 비교까지 | day03 | ✅ [정리](phase-28-performance/bottleneck-types.md) |
 | Swagger 고도화 + AOP 로깅 | 테이블/Controller 늘어난 후 태그별 그룹화, 응답 스키마 명시. AOP 기반 공통 로깅(@Loggable)과 함께 진행 | day03 | 🔲 |
+| KIS 계좌별 토큰 캐싱 설계 | 공용 토큰 vs 계좌별 토큰 분리 이유, Redis 키 분리, TTL 계산 | day14 | ✅ [정리](phase-16-redis/kis-account-token-caching.md) |
+| 외부 API 호출과 트랜잭션 분리 | 외부 API를 트랜잭션 안에 넣으면 생기는 문제, 단계별 진화 계획 | day14 | ✅ [정리](phase-11-db-jpa/transaction-external-api.md) |
 | AES-256 암호화 + 위협 모델 | BrokerAccount appkey/appsecret 암호화. CBC/IV 원리, 위협 모델 분석, PBKDF2/KMS TODO | day11 | ✅ [정리](phase-14-security-jwt/aes-encryption.md) |
 | CORS | SecurityConfig CorsConfigurationSource 빈 추가. SOP 원리, Preflight, allowCredentials와 와일드카드 제한, Vite 프록시 우회 | day12 | ✅ [정리](phase-14-security-jwt/cors.md) |
 | JPA AttributeConverter | DB 저장 시 자동 변환 인터페이스. @Convert 적용, @Component Bean 주입, 서비스 투명성 | day11 | ✅ [정리](phase-11-db-jpa/attribute-converter.md) |

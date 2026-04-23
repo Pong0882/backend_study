@@ -56,6 +56,7 @@ public class BrokerAccountService {
                 .user(user)
                 .broker(request.getBroker())
                 .accountType(request.getAccountType())
+                .accountNumber(request.getAccountNumber())
                 .appkey(request.getAppkey())
                 .appsecret(request.getAppsecret())
                 .build();

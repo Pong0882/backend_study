@@ -18,6 +18,10 @@ public class BrokerAccountCreateRequest {
     @Schema(description = "계좌 유형 (MOCK: 모의투자, REAL: 실투자)", example = "MOCK")
     private BrokerAccount.AccountType accountType;
 
+    @NotBlank(message = "계좌번호를 입력해주세요.")
+    @Schema(description = "KIS 계좌번호 앞 8자리 (CANO)", example = "50123456")
+    private String accountNumber;
+
     @NotBlank(message = "앱키를 입력해주세요.")
     @Schema(description = "증권사 API 앱키", example = "PSo...")
     private String appkey;
