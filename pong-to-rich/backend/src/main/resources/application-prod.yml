@@ -33,9 +33,10 @@ spring:
       port: 6379
 
 kis:
-  app-key: ${KIS_APP_KEY}
-  app-secret: ${KIS_APP_SECRET}
-  base-url: ${KIS_BASE_URL}
+  app-key: ${KIS_APP_KEY:}
+  app-secret: ${KIS_APP_SECRET:}
+  mock-base-url: https://openapivts.koreainvestment.com:29443
+  real-base-url: https://openapi.koreainvestment.com:9443
 
 jwt:
   secret: ${JWT_SECRET}

@@ -1,6 +1,7 @@
 package com.pongtorich.pong_to_rich.service;
 
 import com.pongtorich.pong_to_rich.config.KisConfig;
+import com.pongtorich.pong_to_rich.domain.broker.BrokerAccount;
 import com.pongtorich.pong_to_rich.dto.kis.KisTokenResponse;
 import com.pongtorich.pong_to_rich.exception.BusinessException;
 import com.pongtorich.pong_to_rich.exception.ErrorCode;
@@ -50,17 +51,20 @@ class KisAuthServiceTest {
     @Mock
     private RestClient.ResponseSpec responseSpec;
 
+    @Mock
+    private BrokerAccount mockAccount;
+
     @InjectMocks
     private KisAuthService kisAuthService;
 
-    private static final String REDIS_KEY = "kis:token";
+    private static final Long ACCOUNT_ID = 1L;
+    private static final String REDIS_KEY = "kis:token:" + ACCOUNT_ID;
     private static final String FAKE_TOKEN = "fake-access-token";
 
     @BeforeEach
     void setUp() {
         given(redisTemplate.opsForValue()).willReturn(valueOperations);
 
-        // RestClient 체이닝 공통 설정
         given(restClient.post()).willReturn(requestBodyUriSpec);
         given(requestBodyUriSpec.uri(anyString())).willReturn(requestBodySpec);
         given(requestBodySpec.header(anyString(), anyString())).willReturn(requestBodySpec);
@@ -69,7 +73,13 @@ class KisAuthServiceTest {
 
         given(kisConfig.appKey()).willReturn("test-appkey");
         given(kisConfig.appSecret()).willReturn("test-appsecret");
-        given(kisConfig.baseUrl()).willReturn("https://openapi.koreainvestment.com:9443");
+        given(kisConfig.mockBaseUrl()).willReturn("https://openapivts.koreainvestment.com:29443");
+        given(kisConfig.realBaseUrl()).willReturn("https://openapi.koreainvestment.com:9443");
+
+        given(mockAccount.getId()).willReturn(ACCOUNT_ID);
+        given(mockAccount.getAccountType()).willReturn(BrokerAccount.AccountType.MOCK);
+        given(mockAccount.getAppkey()).willReturn("test-appkey");
+        given(mockAccount.getAppsecret()).willReturn("test-appsecret");
     }
 
     @Test
@@ -79,7 +89,7 @@ class KisAuthServiceTest {
         given(valueOperations.get(REDIS_KEY)).willReturn(FAKE_TOKEN);
 
         // when
-        String token = kisAuthService.getAccessToken();
+        String token = kisAuthService.getAccessToken(mockAccount);
 
         // then
         assertThat(token).isEqualTo(FAKE_TOKEN);
@@ -96,7 +106,7 @@ class KisAuthServiceTest {
         ));
 
         // when
-        String token = kisAuthService.getAccessToken();
+        String token = kisAuthService.getAccessToken(mockAccount);
 
         // then
         assertThat(token).isEqualTo(FAKE_TOKEN);
@@ -111,7 +121,7 @@ class KisAuthServiceTest {
         given(responseSpec.body(KisTokenResponse.class)).willReturn(null);
 
         // when & then
-        assertThatThrownBy(() -> kisAuthService.getAccessToken())
+        assertThatThrownBy(() -> kisAuthService.getAccessToken(mockAccount))
                 .isInstanceOf(BusinessException.class)
                 .satisfies(e -> assertThat(((BusinessException) e).getErrorCode())
                         .isEqualTo(ErrorCode.KIS_AUTH_FAILED));

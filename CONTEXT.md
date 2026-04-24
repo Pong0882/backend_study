@@ -62,3 +62,4 @@ AI는 아래 모든 영역의 **실무 전문가 수준**으로 대응해야 한
 | 2026-04-20 | [context09-2026-04-20.md](./context/context09-2026-04-20.md) |
 | 2026-04-21 | [context10-2026-04-21.md](./context/context10-2026-04-21.md) |
 | 2026-04-22 | [context11-2026-04-22.md](./context/context11-2026-04-22.md) |
+| 2026-04-24 | [context12-2026-04-24.md](./context/context12-2026-04-24.md) |

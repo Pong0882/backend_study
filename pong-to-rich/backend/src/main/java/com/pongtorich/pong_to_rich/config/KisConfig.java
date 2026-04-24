@@ -9,5 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record KisConfig(
         String appKey,
         String appSecret,
-        String baseUrl
+        String mockBaseUrl,
+        String realBaseUrl
 ) {}

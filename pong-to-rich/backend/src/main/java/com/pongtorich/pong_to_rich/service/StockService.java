@@ -60,7 +60,7 @@ public class StockService {
         // 전체 응답: { rt_cd, msg_cd, msg1, output: { stck_prpr, ... } }
         // output 필드만 추출해서 DTO로 변환
         Map<String, Object> response = restClient.get()
-                .uri(kisConfig.baseUrl()
+                .uri(kisConfig.mockBaseUrl()
                         + "/uapi/domestic-stock/v1/quotations/inquire-price"
                         + "?FID_COND_MRKT_DIV_CODE=J"
                         + "&FID_INPUT_ISCD=" + stockCode)
@@ -122,7 +122,7 @@ public class StockService {
             log.info("[기간별시세] {}페이지 호출 — {} ~ {}", page, startDate, currentEnd.format(TRADE_DATE_FORMAT));
 
             KisDailyPriceResponse response = restClient.get()
-                    .uri(kisConfig.baseUrl()
+                    .uri(kisConfig.mockBaseUrl()
                             + "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
                             + "?FID_COND_MRKT_DIV_CODE=J"
                             + "&FID_INPUT_ISCD=" + stockCode
